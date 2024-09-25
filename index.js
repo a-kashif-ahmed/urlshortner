@@ -1,7 +1,7 @@
 // // const PORT = 8000;
 // const fs = require('fs')
 const path = require('path')
-const {converts, redrct, display } = require('./convert');
+const {converts, redrct, display } = require('./controllers/convert');
 // const serverless = require('serverless-http')
 const express = require('express');
 const app = express();
