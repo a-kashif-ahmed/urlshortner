@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const shortid = require('shortid');
 const Url = require('../models/url');
 const { randomInt } = require('crypto');
-const MANGODB_URI = process.env.MONGODB ?? "mongodb+srv://dbadmin:kashif501@7@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority"
+const MANGODB_URI = process.env.MONGODB ?? "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority"
 mongoose.connect(MANGODB_URI);
 
 async function converts(body) {
