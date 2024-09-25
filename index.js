@@ -12,12 +12,12 @@ app.use(express.urlencoded({extended:false}))
 
 
 app.get("/", (req,res)=>{
-    res.render("index");
+    res.render("home");
 })
 
 app.post("/",  async (req, res)=>{
     const va = await converts(req.body);
-    res.render("index", {
+    res.render("home", {
         convUrl: va ,
     });
     
@@ -27,7 +27,7 @@ app.post("/urls", async (req,res)=>{
  
     const urlss = await display();
     
-    res.render("index",{
+    res.render("home",{
         result: urlss,
     })
 })

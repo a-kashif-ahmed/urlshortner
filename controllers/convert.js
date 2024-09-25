@@ -8,7 +8,7 @@ mongoose.connect(udb)
 
 async function converts(body) {
     // const body = req.body;
-    if (!body.url) return res.status(400).render("index", { msg: "No URL Found" });
+    if (!body.url) return res.status(400).render("home", { msg: "No URL Found" });
     var shrtid = shortid();
     var ip;
     // var ide = randomInt(1000);
