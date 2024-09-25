@@ -36,6 +36,8 @@ const va = await redrct(req);
 // console.log(va);
 res.redirect(va);
 })
+
+module.exports=app;
 // app.listen(PORT,(req,res)=>{
 //     console.log(`Server Live at :${PORT}`)
 // })
