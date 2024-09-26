@@ -46,7 +46,7 @@ async function display() {
         const ipData = await fetch('https://api.ipify.org?format=json').then(response => response.json());
         const ip = ipData.ip;
 
-        const result = await Url.find({ ipadd: ip }).lean(); // .lean() to improve performance
+        const result = await Url.find({ ipadd: ip }); // .lean() to improve performance
 
         return result || null;
     } catch (err) {
