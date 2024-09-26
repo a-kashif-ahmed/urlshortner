@@ -1,39 +1,48 @@
-const fs = require('fs');
+const fetch = require('node-fetch');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const Url = require('../models/url');
 const { randomInt } = require('crypto');
-const MANGODB_URI = process.env.MONGODB ?? "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
+const MANGODB_URI = process.env.MONGODB || "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
+mongoose.connect(MANGODB_URI);
 
-// Ensure the connection is set up only once
-mongoose.connect(MANGODB_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("MongoDB connection error:", err));
-
-// Use async/await to catch any potential connection issues
-async function converts(body) {
+async function converts(body, res) {
     if (!body.url) return res.status(400).render("home", { msg: "No URL Found" });
 
-    const shrtid = shortid();
-    try {
-        // Fetch IP and create DB entry in parallel
-        const [ipData] = await Promise.all([
-            fetch('https://api.ipify.org?format=json').then(response => response.json())
-        ]);
+    let ip;
 
-        const ip = ipData.ip;
+    try {
+        // Fetch the IP address
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        ip = data.ip;  // Ensure the IP is fetched successfully
+    } catch (error) {
+        console.error("Error fetching IP address:", error);
+        return res.status(500).render("home", { msg: "Failed to get IP address" });
+    }
+
+    if (!ip) {
+        return res.status(400).render("home", { msg: "IP address is required" });
+    }
+
+    // Create short ID and add entry in database
+    const shrtid = shortid.generate();
+
+    try {
         await Url.create({
             shortid: shrtid,
             actualurl: body.url,
-            ipadd:ip
-        }); // Update URL with IP after creation
-
-        const srt = "localhost:8000/" + shrtid;
-        return srt;
+            ipadd: ip  // Ensure ipadd is set correctly
+        });
     } catch (err) {
-        throw new Error("Error in URL creation: " + err.message);
+        console.error("Error in URL creation:", err);
+        return res.status(500).render("home", { msg: "Error in URL creation" });
     }
+
+    const srt = "localhost:8000/" + shrtid;
+    return srt;
 }
+
 
 // Optimized display function
 async function display() {
