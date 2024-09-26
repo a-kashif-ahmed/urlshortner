@@ -22,7 +22,7 @@ async function converts(body, res) {
             ]);
 
         const ip = ipData.ip;
-        res.send(srt);
+    
         // Save URL data to MongoDB
         await Url.create({
             shortid: shrtid,
