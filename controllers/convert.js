@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const Url = require('../models/url');
 const { randomInt } = require('crypto');
+const { escape } = require('querystring');
 // Assuming you're using node-fetch for IP fetching
 const MANGODB_URI = process.env.MONGODB || "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
 
@@ -13,15 +14,15 @@ async function converts(body, res) {
     if (!body.url) return res.status(400).render("home", { msg: "No URL Found" });
 
     try {
+        var shrtid = shortid.generate();
+        const srt = "localhost:8000/" + shrtid;
         // Simultaneously create short ID and fetch the IP
-        const [ipData, shrtid] = await Promise.all([
+        const [ipData] = await Promise.all([
             fetch('https://api.ipify.org?format=json').then(response => response.json()),
-            shortid.generate()
-        ]);
+            ]);
 
         const ip = ipData.ip;
-        if (!ip) return res.status(400).render("home", { msg: "IP address is required" });
-
+        res.send(srt);
         // Save URL data to MongoDB
         await Url.create({
             shortid: shrtid,
@@ -29,7 +30,7 @@ async function converts(body, res) {
             ipadd: ip
         });
 
-        const srt = "localhost:8000/" + shrtid;
+       
         return srt;
 
     } catch (err) {
