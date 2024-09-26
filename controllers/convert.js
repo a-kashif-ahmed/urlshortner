@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const Url = require('../models/url');
 const { randomInt } = require('crypto');
-const fetch = require('node-fetch'); // Assuming you're using node-fetch for IP fetching
+// Assuming you're using node-fetch for IP fetching
 const MANGODB_URI = process.env.MONGODB || "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
 
 // Connect to MongoDB
