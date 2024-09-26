@@ -23,6 +23,7 @@ app.post("/",  async (req, res)=>{
     
 
 })
+app.get('/favicon.ico', (req, res) => res.status(204));
 app.post("/urls", async (req,res)=>{
  
     const urlss = await display();
