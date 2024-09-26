@@ -47,7 +47,7 @@ async function display() {
         const ip = ipData.ip;
 
         const result = await Url.find({ ipadd: ip }); // .lean() to improve performance
-
+        console.log(result);
         return result || null;
     } catch (err) {
         throw new Error("Error fetching URL: " + err.message);
