@@ -7,7 +7,7 @@ const { escape } = require('querystring');
 const MANGODB_URI = process.env.MONGODB || "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
 
 // Connect to MongoDB
-mongoose.connect(MANGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MANGODB_URI);
 
 // Optimized URL shortener function
 async function converts(body, res) {
