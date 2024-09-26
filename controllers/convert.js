@@ -1,4 +1,3 @@
-const fetch = require('node-fetch');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const Url = require('../models/url');
