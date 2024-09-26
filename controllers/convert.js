@@ -46,7 +46,7 @@ async function display() {
         const ipData = await fetch('https://api.ipify.org?format=json').then(response => response.json());
         const ip = ipData.ip;
 
-        const result = await Url.find({ ipadd: ip }); // .lean() to improve performance
+        const result = await Url.find({ ipadd: ip }).lean(); // .lean() to improve performance
 
         return result || null;
     } catch (err) {
@@ -58,7 +58,7 @@ async function display() {
 async function redrct(req) {
     const srt = req.params.srt;
     try {
-        const result = await Url.findOne({ shortid: srt }); // .lean() improves query performance
+        const result = await Url.findOne({ shortid: srt }).lean(); // .lean() improves query performance
         return result ? result.actualurl : null;
     } catch (err) {
         throw new Error("Error fetching redirection URL: " + err.message);
