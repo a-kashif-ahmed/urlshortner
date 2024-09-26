@@ -18,8 +18,7 @@ async function converts(body) {
     try {
         // Fetch IP and create DB entry in parallel
         const [ipData] = await Promise.all([
-            fetch('https://api.ipify.org?format=json').then(response => response.json()),
-            Url.create({ shortid: shrtid, actualurl: body.url })
+            fetch('https://api.ipify.org?format=json').then(response => response.json())
         ]);
 
         const ip = ipData.ip;
