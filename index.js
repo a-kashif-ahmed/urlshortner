@@ -23,6 +23,9 @@ app.post("/",  async (req, res)=>{
     
 
 })
+app.get('/ad',(req,res)=>{
+    res.send("<h1>Space</h1>")
+})
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.post("/urls", async (req,res)=>{
  
