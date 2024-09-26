@@ -1,79 +1,68 @@
 const fs = require('fs');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const shortid = require('shortid');
 const Url = require('../models/url');
 const { randomInt } = require('crypto');
-const MANGODB_URI = process.env.MONGODB ?? "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority"
-mongoose.connect(MANGODB_URI);
+const MANGODB_URI = process.env.MONGODB ?? "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
 
+// Ensure the connection is set up only once
+mongoose.connect(MANGODB_URI)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB connection error:", err));
+
+// Use async/await to catch any potential connection issues
 async function converts(body) {
-    // const body = req.body;
     if (!body.url) return res.status(400).render("home", { msg: "No URL Found" });
-    var shrtid = shortid();
-    var ip;
-    // var ide = randomInt(1000);
-    const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        ip = data.ip;
 
-    await Url.create({
-        shortid: shrtid,
-        actualurl: body.url,
-        ipadd:ip
-    });
-
-    var srt = "localhost:8000/" + shrtid;
-    // console.log(srt);
-    return srt;
-}
-
-async function display() {
-    
- 
-    // var ide = randomInt(1000);
-    const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-       const ip = data.ip;
-        try {
-            const result = await Url.find({ ipadd: ip });
-    
-            if (result) {
-            //    console.log("Found URL:", result.actualurl);  // Log the result
-                return result;
-
-            } else {
-                //  console.log("Shortid not found in the database.");
-                return null;
-            }
-            
-        } catch (err) {
-            //  console.error("Error fetching URL from the database:", err);
-            throw new Error("Database error");
-        }
-    
-}
-
-
-async function redrct(req) {
-    const srt = req.params.srt;  // Get the shortid from URL params
-    // console.log("Looking for shortid:", srt);  // Debugging step
-
+    const shrtid = shortid();
     try {
-        const result = await Url.findOne({ shortid: srt });
+        // Fetch IP and create DB entry in parallel
+        const [ipData] = await Promise.all([
+            fetch('https://api.ipify.org?format=json').then(response => response.json()),
+            Url.create({ shortid: shrtid, actualurl: body.url })
+        ]);
 
-        if (result) {
-            // console.log("Found URL:", result.actualurl);  // Log the result
-            return result.actualurl;
-        } else {
-            // console.log("Shortid not found in the database.");
-            return null;
-        }
+        const ip = ipData.ip;
+        await Url.create({
+            shortid: shrtid,
+            actualurl: body.url,
+            ipadd:ip
+        }); // Update URL with IP after creation
+
+        const srt = "localhost:8000/" + shrtid;
+        return srt;
     } catch (err) {
-        // console.error("Error fetching URL from the database:", err);
-        throw new Error("Database error");
+        throw new Error("Error in URL creation: " + err.message);
     }
 }
 
+// Optimized display function
+async function display() {
+    try {
+        // Get IP and query the DB simultaneously
+        const [ipData] = await Promise.all([
+            fetch('https://api.ipify.org?format=json').then(response => response.json())
+        ]);
+
+        const ip = ipData.ip;
+        const result = await Url.find({ ipadd: ip }).lean(); // Use .lean() to optimize query response
+
+        return result || null;
+    } catch (err) {
+        throw new Error("Error fetching URL: " + err.message);
+    }
+}
+
+// Optimized redirection function
+async function redrct(req) {
+    const srt = req.params.srt;
+    try {
+        const result = await Url.findOne({ shortid: srt }).lean(); // Use .lean() to return plain JavaScript object
+        return result ? result.actualurl : null;
+    } catch (err) {
+        throw new Error("Error fetching redirection URL: " + err.message);
+    }
+}
 
 module.exports = {
     converts,
