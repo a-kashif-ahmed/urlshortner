@@ -15,7 +15,7 @@ async function converts(body, res) {
 
     try {
         var shrtid = shortid.generate();
-        const srt = "localhost:8000/" + shrtid;
+        const srt = "https://urlshortner-puce-seven.vercel.app/" + shrtid;
         // Simultaneously create short ID and fetch the IP
         const [ipData] = await Promise.all([
             fetch('https://api.ipify.org?format=json').then(response => response.json()),
