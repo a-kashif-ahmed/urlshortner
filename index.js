@@ -1,8 +1,8 @@
-// const PORT = 8000;
-// const fs = require('fs')
+const PORT = 8000;
+const fs = require('fs')
 const path = require('path')
 const {converts, redrct, display, log, sign, portfolioredirect, otheredirect,trackport } = require('./controllers/convert');
-// const serverless = require('serverless-http')
+const {fetchall} = require('./controllers/fetchs');
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -36,6 +36,21 @@ app.post("/urls", async (req,res)=>{
     res.render("home",{
         result: urlss,
     })
+});
+app.get('/x', async (req, res) => {
+  try {
+    const all = await fetchall();
+
+    if (!all) {
+      return res.status(500).json({ error: "Failed to fetch data" });
+    }
+
+    // Send JSON response to client
+    return res.status(200).send(all); // or res.json(JSON.parse(all)) if it's a stringified object
+  } catch (err) {
+    console.error("Error in /x route:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
 });
 
 app.get('/p', async (req,res)=>{
@@ -85,7 +100,7 @@ app.get("/:srt", async (req,res)=>{
     }
 })
 
-module.exports=app;
-// app.listen(PORT,(req,res)=>{
-//     console.log(`Server Live at :${PORT}`)
-// })
+// module.exports=app;
+app.listen(PORT,(req,res)=>{
+    console.log(`Server Live at :${PORT}`)
+})
