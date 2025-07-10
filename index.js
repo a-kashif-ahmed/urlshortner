@@ -1,7 +1,7 @@
-const PORT = 8000;
-const fs = require('fs')
+// const PORT = 8000;
+// const fs = require('fs')
 const path = require('path')
-const {converts, redrct, display, log, sign, portfolioredirect, otheredirect,trackport } = require('./controllers/convert');
+const {converts, redrct, display, portfolioredirect, otheredirect } = require('./controllers/convert');
 const {fetchall} = require('./controllers/fetchs');
 const express = require('express');
 const app = express();
@@ -100,7 +100,7 @@ app.get("/:srt", async (req,res)=>{
     }
 })
 
-// module.exports=app;
-app.listen(PORT,(req,res)=>{
-    console.log(`Server Live at :${PORT}`)
-})
+module.exports=app;
+// app.listen(PORT,(req,res)=>{
+//     console.log(`Server Live at :${PORT}`)
+// })
