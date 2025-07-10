@@ -1,7 +1,9 @@
 const MANGODB_URI = process.env.MONGODB || "mongodb+srv://dbadmin:kashif5017@cluster0.asqex.mongodb.net/shorturl?retryWrites=true&w=majority";
+const mongoose = require('mongoose');
+
+const portfolioIp = require('../models/portfolioIp');
 const admin = require('../models/admin');
 const otherIp = require('../models/otherIp');
-const portfolioIp = require('../models/portfolioIp');
 // global variable to store connection (beginner approach)
 let isConnected = false;
 

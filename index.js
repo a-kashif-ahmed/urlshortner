@@ -1,7 +1,7 @@
-// const PORT = 8000;
-// const fs = require('fs')
+const PORT = 8000;
+const fs = require('fs')
 const path = require('path')
-const {converts, redrct, display, portfolioredirect, otheredirect } = require('./controllers/convert');
+const {converts, redrct, display, log, sign, portfolioredirect, otheredirect,trackport } = require('./controllers/convert');
 const {fetchall} = require('./controllers/fetchs');
 const express = require('express');
 const app = express();
