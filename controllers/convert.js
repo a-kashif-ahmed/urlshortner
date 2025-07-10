@@ -133,15 +133,12 @@ async function redrct(req) {
 }
 
 // function to get user IP
-async function getUserIP() {
-  try {
-    const response = await fetch("https://api.ipify.org?format=json");
-    const data = await response.json();
-    return data.ip;
-  } catch (error) {
-    console.log("Error getting IP:", error);
-    return "unknown";
+function getUserIP(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();  // first IP = real client
   }
+  return req.connection.remoteAddress || 'unknown';
 }
 
 // function to update counter
@@ -189,7 +186,7 @@ async function portfolioredirect(req) {
     await connectDB();
     
     // get user IP
-    const ip = await getUserIP();
+    const ip = await getUserIP(req);
     
     // save to portfolio IP table
     const portfolioEntry = new PortfolioIp({
@@ -231,7 +228,7 @@ async function otheredirect(req) {
     await connectDB();
     
     // get user IP
-    const ip = await getUserIP();
+    const ip = await getUserIP(req);
     
     // save to other IP table
     const otherEntry = new OtherIp({
@@ -250,11 +247,49 @@ async function otheredirect(req) {
   }
 }
 
+async function trackport(req) {
+  const term = req.query.s;
+  const fr = req.query.f;
+  
+  if (!term) {
+    console.log("No term provided for other redirect");
+    return "/";
+  }
+  
+  const termLower = term.toLowerCase();
+  const frLower = fr ? fr.toLowerCase() : "";
+  
+
+  
+  try {
+    await connectDB();
+    
+    // get user IP
+    const ip = await getUserIP(req);
+    
+    // save to other IP table
+    const otherEntry = new OtherIp({
+      frm: "from " + frLower + " to " + termLower + " ",
+      ip: ip
+    });
+    await otherEntry.save();
+    
+    // update counter
+    await incrementCounter(termLower);
+    
+    return true;
+  } catch (error) {
+    console.log("Error in other redirect:", error);
+    return false; // still redirect even if logging fails
+  }
+}
+
 // export all functions
 module.exports = {
   converts,
   redrct,
   display,
   portfolioredirect,
-  otheredirect
+  otheredirect,
+  trackport
 };
