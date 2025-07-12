@@ -5,12 +5,16 @@ const {converts, redrct, display, log, sign, portfolioredirect, otheredirect,tra
 const {fetchall} = require('./controllers/fetchs');
 const express = require('express');
 const app = express();
+const cors = require('cors');
 app.use(express.json());
 app.set('view engine','ejs')
 app.set("views", path.resolve("./views"))
 app.use(express.urlencoded({extended:false}))
 
-
+app.use(cors({
+  origin:'*',
+  credentials: true,
+}));
 app.get("/", (req,res)=>{
     res.render("home");
 })
