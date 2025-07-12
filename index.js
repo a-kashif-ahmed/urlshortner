@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended:false}))
 
 app.use(cors({
   origin:'*',
-  credentials: true,
+  credentials: false,
 }));
 app.get("/", (req,res)=>{
     res.render("home");
