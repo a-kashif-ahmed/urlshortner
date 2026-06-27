@@ -6,6 +6,7 @@ const {fetchall} = require('./controllers/fetchs');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+
 app.use(express.json());
 app.set('view engine','ejs')
 app.set("views", path.resolve("./views"))
