@@ -105,6 +105,6 @@ app.get("/:srt", async (req,res)=>{
 })
 
 module.exports=app;
-// app.listen(PORT,(req,res)=>{
-//     console.log(`Server Live at :${PORT}`)
-// })
+app.listen(PORT,(req,res)=>{
+    console.log(`Server Live at :${PORT}`)
+})
